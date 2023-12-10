@@ -1,0 +1,23 @@
+.products__item {
+  flex: calc(25% - 30px);
+  max-width: calc(25% - 30px); }
+
+@media (max-width: 1440px) {
+  .products__item {
+    flex: calc(33.3% - 30px);
+    max-width: calc(33.3% - 30px); } }
+
+@media (max-width: 1156px) {
+  .products__item {
+    flex: calc(50% - 30px);
+    max-width: calc(50% - 30px); } }
+
+@media (max-width: 800px) {
+  .products__item {
+    flex: calc(100% - 30px);
+    max-width: calc(100% - 30px); } }
+
+@media (max-width: 768px) {
+  .products__item {
+    flex: calc(50% - 30px);
+    max-width: calc(50% - 30px); } }

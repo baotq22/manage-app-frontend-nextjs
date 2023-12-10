@@ -1,113 +1,168 @@
-import Image from 'next/image'
+'use client'
+
+import { requestGetAllProduct } from '../api/product/index'
+import { requestGetAllUser } from "@/api/user/index";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Card, Col, Row, Statistic } from "antd";
+import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import '../../public/css/homepage.css'
+import PaginationProduct from "@/components/pagination/product/paginationProduct";
+import { setProductDataFilter } from "@/states/modules/product";
+import AppBanner from "@/components/banner/app.banner";
+import SpinComponent from "@/components/spin";
+import { Modal } from "antd";
+import PaginationHome from "@/components/pagination/home/paginationHome";
+
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const list = useSelector(state => state.product.listProducts);
+  const listProducts = list.products;
+  const listU = useSelector(state => state.user.listUsers);
+  const isLoading = useSelector(state => state.product.isLoadingGetAllProduct);
+  const filter = useSelector(state => state.product.dataFilter)
+
+  const [openImageDetails, setOpenImageDetails] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const showImageModal = () => {
+    setOpenImageDetails(true);
+  }
+
+  const hideImageModal = () => {
+    setOpenImageDetails(false);
+  }
+
+  const handleImageClick = (image) => {
+    setSelectedImage(image);
+    showImageModal();
+  }
+
+  useEffect(() => {
+    dispatch(requestGetAllUser())
+  }, [])
+
+  useEffect(() => {
+    dispatch(requestGetAllProduct())
+  }, [])
+
+  const handleRefresh = () => {
+    dispatch(setProductDataFilter({ ...filter, search: "", page: 1 }))
+    dispatch(requestGetAllProduct());
+  }
+
+  const onSearch = (value, _e, info) => {
+    dispatch(setProductDataFilter({ ...filter, number_book: value }))
+    dispatch(requestGetAllProduct());
+  };
+
+  function DotPrice({ number }) {
+    const formattedNumber = number.toLocaleString('en-US', { useGrouping: true });
+
+    return (
+      <>
+        {formattedNumber}
+      </>
+    )
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div className="lg:items-center lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-2xl font-bold leading-7 text-gray-900 mt-3 sm:truncate sm:text-3xl sm:tracking-tight">Homepage</h2>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto mb-5">
+          <div className="container">
+            <Row gutter={[16, 24]} className="rowClass">
+              <Col span={12} className="drop-shadow-xl">
+                <Card className="cardBody" style={{ backgroundImage: "linear-gradient(to right, #fff 30%, #C779D0)" }}>
+                  <ShoppingOutlined style={{ float: "right", fontSize: '40px', color: "#fff" }} />
+                  <Statistic
+                    title="Total Products"
+                    value={list?.total}
+                    valueStyle={{ color: '#000' }}
+                  />
+                </Card>
+              </Col>
+              <Col span={12} className="drop-shadow-xl">
+                <Card className="cardBody" style={{ backgroundImage: "linear-gradient(to right, #fff 30%, #26d0ce)" }}>
+                  <UserOutlined style={{ float: "right", fontSize: '40px', color: "#fff" }} />
+                  <Statistic
+                    title="Total Users"
+                    value={listU?.total}
+                    valueStyle={{ color: '#000' }}
+                  />
+                </Card>
+              </Col>
+            </Row>
+          </div>
+        </div>
+        <AppBanner />
+        <div className="max-w-7xl mx-auto my-0">
+          <h3 className="my-5 text-3xl">BEST SELLER</h3>
+          {!isLoading ?
+            <div className="products__list flex flex-wrap">
+              {
+                listProducts?.map((item, index) => {
+                  return (
+                    <div className="products__item drop-shadow-xl
+                                rounded-e-xl rounded-es-xl
+                                p-3 mx-3.5 mb-8 mt-0
+                                bg-neutral-100" key={index}>
+                      <small className="text-white py-1.5 px-2.5
+                                    rounded-ee-xl bg-indigo-500">Portion pay {item?.special}%</small>
+                      <div className="products__img my-1.5">
+                        <div className="my-1.5 flex items-center justify-center h-64">
+                          <button
+                            style={{ width: '100%', height: '100%', cursor: 'pointer', padding: 0, border: 'none', background: 'none' }}
+                            onClick={() => handleImageClick(item?.image)}
+                          >
+                            <img className="max-w-full inline-block" width={300} height={300} src={item?.image} alt="" />
+                          </button>
+                        </div>
+                      </div>
+                      <Link href={`products-manage/details/${item?._id}`} className="no-underline">
+                        <p className="products__title text-lg text-center text-blacke mb-4">{item?.productName}</p>
+                        <p className="text-center text-base">
+                          <span className="text-red-600"><DotPrice number={item?.price} />₫</span>
+                          <span className="bg-slate-300 ml-2 text-red-600 text-base p-1 rounded-md pl-2.5">-{item?.discount}% SALE</span>
+                        </p>
+                        <div className="text-center text-black">
+                          <span className="text-sm p-1">{item?.ratingPoint} points</span>
+                          <span className="text-sm p-1">({item?.quantity} sold)</span>
+                        </div>
+                      </Link>
+                    </div>
+                  )
+                })
+              }
+            </div> : <SpinComponent />}
+          <PaginationHome listProducts={list} />
+          <Modal
+            title="View Details Image"
+            visible={openImageDetails}
+            onOk={hideImageModal}
+            okText="Close"
+            footer={(_, { OkBtn }) => (
+              <>
+                <OkBtn />
+              </>
+            )}
+            className="hide-x"
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            <>
+              {selectedImage && (
+                <img style={{ width: '100%', height: '100%' }} src={selectedImage} alt="Selected Image" />
+              )}
+            </>
+          </Modal>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   )
 }
+
