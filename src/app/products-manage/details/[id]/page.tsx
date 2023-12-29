@@ -3,8 +3,12 @@
 import { requestGetDetailsProduct } from "@/api/product";
 import SpinComponent from "@/components/spin";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux"
+import gsap from "gsap";
+import { Flip } from "gsap/all";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 function DotPrice({ number }) {
     const formattedNumber = number ? number.toLocaleString('en-US', { useGrouping: true }) : '';
@@ -31,10 +35,29 @@ const DetailProductPage = () => {
 
     const afterDiscount = detailsProduct?.price * (1 - (detailsProduct?.discount * 0.01))
 
+    const ref = useRef(null);
+    gsap.registerPlugin(ScrollTrigger);
+
+    useEffect(() => {
+        gsap.fromTo(".detailsProduct",
+            {
+                opacity: 0,
+                ease: "bounce",
+                scrollTrigger: {
+                    trigger: ".detailsProduct"
+                }
+            },
+            {
+                duration: 5,
+                opacity: 1,
+            }
+        )
+    })
+
     return (
         <>
             {!isLoading ? (
-                <div className="mx-5 my-5">
+                <div className="mx-5 my-5 detailsProduct" ref={ref}>
                     <div className="drop-shadow-2xl">
                         <div className="p-12 mt-12 leading-6 bg-neutral-200">
                             <div className="container-fliud">

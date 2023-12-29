@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { requestGetAllUser } from "@/api/user";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PaginationUser from "@/components/pagination/user/paginationUser";
 import { DeleteOutlined, EditOutlined, FileTextOutlined, RetweetOutlined } from "@ant-design/icons";
@@ -13,6 +13,10 @@ import ModalDeleteUser from "../../components/modal/user/ModalDeleteUser"
 import { Modal } from "antd";
 import moment from "moment";
 import InputSearchUser from "@/components/inputSearch/user/inputSearchUser"
+import gsap from "gsap";
+import { Flip } from "gsap/all";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const UserManage = () => {
     const [startIndex, setStartIndex] = useState(0);
@@ -64,6 +68,25 @@ const UserManage = () => {
         dispatch(setUserDataFilter({ ...filter, number_user: value }))
         dispatch(requestGetAllUser())
     }
+
+    const ref = useRef(null);
+    gsap.registerPlugin(ScrollTrigger);
+
+    useEffect(() => {
+        gsap.fromTo(".allUsers",
+            {
+                opacity: 0,
+                ease: "bounce",
+                scrollTrigger: {
+                    trigger: ".allUsers"
+                }
+            },
+            {
+                duration: 6,
+                opacity: 1,
+            }
+        )
+    })
 
     return (
         <>
@@ -126,10 +149,10 @@ const UserManage = () => {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="allUsers">
                             {
                                 listUsers?.map((item, index) =>
-                                    <tr className="bg-white border-b" key={index}>
+                                    <tr className="bg-white border-b allUsers" key={index}>
                                         <td className="px-6 py-4 border-r border-slate-500">
                                             {startIndex + index + 1}
                                         </td>

@@ -3,8 +3,12 @@
 import { requestGetDetailsUser } from "@/api/user";
 import SpinComponent from "@/components/spin";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import gsap from "gsap";
+import { Flip } from "gsap/all";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const DetailUserPage = () => {
     const dispatch = useDispatch();
@@ -30,14 +34,49 @@ const DetailUserPage = () => {
         )
     }
 
+    const ref = useRef(null);
+    gsap.registerPlugin(ScrollTrigger);
+
+    useEffect(() => {
+        gsap.fromTo(".cover",
+            {
+                opacity: 0,
+                ease: "bounce",
+                scrollTrigger: {
+                    trigger: ".cover"
+                }
+            },
+            {
+                duration: 2,
+                opacity: 1,
+            }
+        )
+
+        gsap.fromTo(".fullInfo",
+            {
+                opacity: 0,
+                ease: "sine.in",
+                scrollTrigger: {
+                    trigger: ".fullInfo"
+                }
+            },
+            {
+                duration: 2,
+                delay: 2,
+                opacity: 1,
+                y: -50,
+            }
+        )
+    })
+
     return (
         <>
-            <div className="mx-auto my-5 max-w-7xl">
+            <div className="mx-auto my-5 max-w-7xl" ref={ref}>
                 <div className="drop-shadow-2xl">
-                    <div className="flex justify-center items-center overflow-hidden">
-                        <img src={`http://localhost:3001/api/product/img/${detailsUser?.imageMain}`} className="shrink-0 min-w-full" style={{ maxHeight: "300px", objectFit: "cover" }} />
+                    <div className="flex justify-center items-center overflow-hidden cover">
+                        <img src={`http://localhost:3001/api/product/img/${detailsUser?.imageMain}`} className="shrink-0 min-w-full" style={{ maxHeight: "350px", objectFit: "cover" }} />
                     </div>
-                    <div className="p-6 flex leading-6 bg-neutral-200">
+                    <div className="p-6 flex leading-6 bg-neutral-200 fullInfo">
                         <div className="p-5 text-black" style={{ flex: '30%', maxWidth: '30%' }}>
                             <div className="mb-6">
                                 <img src={`http://localhost:3001/api/product/img/${detailsUser?.image}`} className="rounded-full" alt="User-Profile-Image" />

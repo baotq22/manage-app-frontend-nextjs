@@ -2,7 +2,7 @@
 
 import { requestGetAllProduct } from '../api/product/index'
 import { requestGetAllUser } from "@/api/user/index";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Col, Row, Statistic } from "antd";
 import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
@@ -14,7 +14,10 @@ import AppBanner from "@/components/banner/app.banner";
 import SpinComponent from "@/components/spin";
 import { Modal } from "antd";
 import PaginationHome from "@/components/pagination/home/paginationHome";
-
+import gsap from "gsap";
+import { Flip } from "gsap/all";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -67,9 +70,43 @@ export default function Home() {
     )
   }
 
+  const ref = useRef(null);
+  gsap.registerPlugin(ScrollTrigger);
+
+  useEffect(() => {
+    gsap.fromTo(".container",
+      {
+        opacity: 0,
+        ease: "bounce",
+        scrollTrigger: {
+          trigger: ".container"
+        }
+      },
+      {
+        duration: 2,
+        opacity: 1,
+      }
+    )
+
+    gsap.fromTo(".product__list",
+      {
+        opacity: 0,
+        ease: "fade",
+        scrollTrigger: {
+          trigger: ".product__list"
+        }
+      },
+      {
+        duration: 6,
+        opacity: 1,
+        ease: "rough"
+      }
+    );
+  }, []);
+
   return (
     <>
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 first">
         <div className="lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 mt-3 sm:truncate sm:text-3xl sm:tracking-tight">Homepage</h2>
@@ -102,7 +139,7 @@ export default function Home() {
           </div>
         </div>
         <AppBanner />
-        <div className="max-w-7xl mx-auto my-0">
+        <div className="max-w-7xl mx-auto my-0 product__list" ref={ref}>
           <h3 className="my-5 text-3xl">BEST SELLER</h3>
           {!isLoading ?
             <div className="products__list flex flex-wrap">

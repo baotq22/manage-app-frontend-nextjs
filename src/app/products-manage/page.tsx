@@ -4,7 +4,7 @@ import { requestGetAllProduct } from "@/api/product";
 import PaginationProduct from "@/components/pagination/product/paginationProduct";
 import { setProductActive, setOpenModalDeleteProduct, setOpenModalAddProduct, setOpenModalUpdateProduct, setProductDataFilter } from "@/states/modules/product";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ModalDeleteProduct from "../../components/modal/product/modalDeleteProduct"
 import ModalAddProduct from "../../components/modal/product/modalAddProduct"
@@ -14,6 +14,10 @@ import InputSearchProduct from "@/components/inputSearch/product/inputSearchProd
 import SpinComponent from "@/components/spin";
 import { Modal, Tooltip } from "antd";
 import moment from "moment";
+import gsap from "gsap";
+import { Flip } from "gsap/all";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const ProductsManage = () => {
     const [startIndex, setStartIndex] = useState(0);
@@ -106,9 +110,28 @@ const ProductsManage = () => {
         );
     }
 
+    const ref = useRef(null);
+    gsap.registerPlugin(ScrollTrigger);
+
+    useEffect(() => {
+        gsap.fromTo(".allProducts",
+            {
+                opacity: 0,
+                ease: "bounce",
+                scrollTrigger: {
+                    trigger: ".allProducts"
+                }
+            },
+            {
+                duration: 6,
+                opacity: 1,
+            }
+        )
+    })
+
     return (
         <>
-            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8" ref={ref}>
                 <button type="button"
                     className="bg-slate-300 my-2
                                 text-black rounded-lg
@@ -131,8 +154,8 @@ const ProductsManage = () => {
                 {!isLoading ?
                     <div className="relative overflow-x-auto w-full">
                         <table className="w-full text-sm text-left text-gray-500 table-auto">
-                            <thead className="text-xs text-gray-700 uppercase bg-stone-200">
-                                <tr>
+                            <thead className="text-xs text-gray-700 uppercase bg-stone-200 allProducts">
+                                <tr className="allProducts">
                                     <th scope="col" className="px-6 py-3 border-r border-slate-500">
                                         #
                                     </th>
@@ -177,10 +200,10 @@ const ProductsManage = () => {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className="allProducts">
                                 {
                                     listProducts?.map((item, index) =>
-                                        <tr className="bg-white border-b" key={index}>
+                                        <tr className="bg-white border-b allProducts" key={index}>
                                             <td className="px-6 py-4 border-r border-slate-500">
                                                 {startIndex + index + 1}
                                             </td>
@@ -202,7 +225,7 @@ const ProductsManage = () => {
                                             <td className="px-6 py-4 border-r border-slate-500 text-center">
                                                 {item?.discount}
                                             </td>
-                                            <td className="px-2 py-4 border-r border-slate-500">
+                                            <td className="px-2 py-4 border-r border-slate-500 text-center">
                                                 {item?.special}% of pay
                                             </td>
                                             <td className="px-2 py-4 border-r border-slate-500">
