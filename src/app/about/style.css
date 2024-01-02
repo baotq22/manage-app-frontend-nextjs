@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow-x: hidden;
+
+}
+
+.vertical-scroll {
+    position: relative;
+}
+
+.sectionA,
+.sectionB,
+.sectionC {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divD {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    width: 400vw;
+}
+
+.content-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.h-100vh {
+    height: 100vh;
+}
+
+section {
+    width: 100%;
+}
+
+.lightgreen {
+    background: lightgreen;
+}
+
+.lightblue {
+    background: lightblue;
+}
+
+.pink {
+    background: pink;
+}
+
+.lightpurple {
+    background: #f6cefc;
+}
+
+.titleDesc::-webkit-scrollbar {
+    display: none;
+}
+
+.titleDesc {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
