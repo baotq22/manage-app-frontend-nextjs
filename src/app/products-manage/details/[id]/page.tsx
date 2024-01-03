@@ -42,13 +42,13 @@ const DetailProductPage = () => {
         gsap.fromTo(".detailsProduct",
             {
                 opacity: 0,
-                ease: "bounce",
                 scrollTrigger: {
                     trigger: ".detailsProduct"
                 }
             },
             {
-                duration: 5,
+                duration: 3,
+                ease: "elastic.out(1,0.3)",
                 opacity: 1,
             }
         )

@@ -76,13 +76,13 @@ const UserManage = () => {
         gsap.fromTo(".allUsers",
             {
                 opacity: 0,
-                ease: "bounce",
                 scrollTrigger: {
                     trigger: ".allUsers"
                 }
             },
             {
-                duration: 6,
+                duration: 3,
+                ease: "elastic.out(1,1)",
                 opacity: 1,
             }
         )

@@ -117,13 +117,13 @@ const ProductsManage = () => {
         gsap.fromTo(".allProducts",
             {
                 opacity: 0,
-                ease: "bounce",
                 scrollTrigger: {
                     trigger: ".allProducts"
                 }
             },
             {
-                duration: 6,
+                duration: 3,
+                ease: "elastic.out(1,1)",
                 opacity: 1,
             }
         )

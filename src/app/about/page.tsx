@@ -6,8 +6,6 @@ import { useEffect, useRef } from "react";
 import moment from "moment";
 import "./style.css"
 
-gsap.registerPlugin(ScrollTrigger);
-
 const data = [
     {
         name: "D1",
@@ -49,7 +47,8 @@ const AboutPage = () => {
     const containerRef = useRef(null);
 
     useEffect(() => {
-        // gsap for A-D vertical scroll snap
+        gsap.registerPlugin(ScrollTrigger);
+
         const firstVerticalContext = gsap.timeline({
             scrollTrigger: {
                 trigger: ".first",
@@ -60,12 +59,11 @@ const AboutPage = () => {
                     snapTo: 1 / 3,
                     duration: { min: 0.25, max: 0.75 },
                     delay: 0.125,
-                    ease: "power1.inOut"
-                }
+                    ease: "power1.inOut",
+                },
             }
         });
 
-        // gsap for D1 - D4 horizontal scroll snap
         const horizontalContext = gsap.context(() => {
             const horizontalScrollData = gsap.utils.toArray(".horizontalSection");
             gsap.to(horizontalScrollData, {
@@ -75,7 +73,6 @@ const AboutPage = () => {
                     trigger: containerRef.current,
                     scrub: 1,
                     pin: true,
-                    // snap: 1 / (horizontalScrollData.length - 1),
                     snap: {
                         snapTo: 1 / (horizontalScrollData.length - 1),
                         duration: { min: 0.25, max: 0.75 },
@@ -87,13 +84,11 @@ const AboutPage = () => {
             });
         }, mainRef);
 
-        // gsap for D4 to E snap vertical
         const lastVerticalContext = gsap.context(() => {
             gsap.timeline({
                 scrollTrigger: {
                     trigger: ".divE",
                     start: "top bottom+=1",
-                    // endTrigger: ".divE",
                     end: "bottom bottom",
                     snap: [0, 1]
                 }
@@ -111,44 +106,154 @@ const AboutPage = () => {
         gsap.registerPlugin(ScrollTrigger);
 
         gsap.fromTo(
-            ".title",
+            ".name",
             {
                 opacity: 0,
-                ease: "sine.in",
-                scrollTrigger: ".title",
+                ease: "sine.out",
+                scrollTrigger: {
+                    trigger: ".name",
+                },
             },
             {
                 duration: 2,
                 opacity: 1,
-                y: 40,
+                y: 80,
             }
         );
 
         gsap.fromTo(
-            ".author",
+            ".time",
             {
                 opacity: 0,
                 ease: "sine.in",
-                scrollTrigger: ".author",
+                scrollTrigger: {
+                    trigger: ".time",
+                },
             },
             {
                 duration: 2,
-                delay: 4,
                 opacity: 1,
+                y: 80,
             }
         );
 
         gsap.fromTo(
-            ".purpose",
+            ".titleDesc",
             {
                 opacity: 0,
                 ease: "sine.in",
-                scrollTrigger: ".purpose",
+                scrollTrigger: {
+                    trigger: ".titleDesc",
+                },
             },
             {
                 duration: 2,
-                delay: 10,
                 opacity: 1,
+                y: 80,
+            }
+        );
+
+        gsap.fromTo(
+            ".author1",
+            {
+                opacity: 0,
+                ease: "sine.in",
+            },
+            {
+                duration: 2,
+                opacity: 1,
+                x: -40,
+                scrollTrigger: {
+                    trigger: ".author",
+                    start: "top center",
+                    end: "center center",
+                    scrub: true,
+                },
+            }
+        );
+
+        gsap.fromTo(
+            ".author2",
+            {
+                opacity: 0,
+                ease: "sine.in",
+            },
+            {
+                duration: 2,
+                opacity: 1,
+                x: 40,
+                scrollTrigger: {
+                    trigger: ".author",
+                    start: "top center",
+                    end: "center center",
+                    scrub: true,
+                },
+            }
+        );
+
+        gsap.fromTo(
+            ".vision",
+            {
+                opacity: 0,
+            },
+            {
+                duration: 4,
+                opacity: 1,
+                scrollTrigger: {
+                    trigger: ".vision",
+                    start: "top center",
+                    end: "center center",
+                    scrub: true,
+                },
+            }
+        );
+
+        gsap.fromTo(
+            ".divD",
+            {
+                opacity: 0,
+                ease: "sine.in",
+            },
+            {
+                duration: 2,
+                opacity: 1,
+                y: 80,
+                scrollTrigger: {
+                    trigger: ".divD",
+                    start: "top center",
+                    end: "center center",
+                    scrub: true,
+                },
+            }
+        )
+
+        gsap.to(
+            ".summarize",
+            {
+                duration: 2,
+                opacity: 0,
+                x: -80,
+                scrollTrigger: {
+                    trigger: ".summarize",
+                    start: "top 300px",
+                    end: "bottom -500px",
+                    scrub: true,
+                },
+            }
+        );
+
+        gsap.to(
+            ".purposes",
+            {
+                duration: 2,
+                opacity: 0,
+                x: 80,
+                scrollTrigger: {
+                    trigger: ".purposes",
+                    start: "top 300px",
+                    end: "bottom -500px",
+                    scrub: true,
+                },
             }
         );
     }, []);
@@ -163,7 +268,7 @@ const AboutPage = () => {
                 <section className="sectionA lightblue content-center first">
                     <div className="mx-auto max-w-7xl" >
                         <header style={{ height: "100vh" }}>
-                            <div className="mt-auto mr-auto flex title" style={{ paddingLeft: ".3684210526vw", paddingRight: ".3684210526vw", marginTop: "-50px", marginBottom: "150px" }}>
+                            <div className="mt-auto mr-auto flex name" style={{ paddingLeft: ".3684210526vw", paddingRight: ".3684210526vw", marginTop: "-50px", marginBottom: "150px" }}>
                                 <div className="max-w-full px-2">
                                     <div className="overflow-hidden">
                                         <h2 className="text-gray-700 w-full" style={{ fontSize: "calc(4.8rem + 5.22105vw)" }}>
@@ -172,12 +277,12 @@ const AboutPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <section className="flex title mb-8">
-                                <div className="flex-1 w-1/4">
+                            <section className="flex mb-8">
+                                <div className="flex-1 w-1/4 time">
                                     <div>Hanoi, Vietnam</div>
                                     <div>Local Time → {currentTime}</div>
                                 </div>
-                                <div className="flex-1 w-1/4">
+                                <div className="flex-1 w-1/4 time">
                                     <div>{currentDay}</div>
                                     <div>{currentDMY}</div>
                                 </div>
@@ -191,7 +296,7 @@ const AboutPage = () => {
                 <section className="sectionB lightgreen content-center">
                     <div className="mx-auto max-w-5xl">
                         <div className="flex author">
-                            <div className="flex-1 w-1/4">
+                            <div className="text-xl font-light flex-1 w-1/4 author1">
                                 <div className="flex items-center space-x-5">
                                     <div className="flex-shrink-0">
                                         <div className="relative avatar">
@@ -221,7 +326,7 @@ const AboutPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="text-xl font-light flex-1 w-3/4">
+                            <div className="text-xl font-light flex-1 w-3/4 author2">
                                 <h2 className="text-black">About</h2>
                                 <div className="text-black space-y-3 mt-3 text-justify">
                                     <p>
@@ -246,7 +351,7 @@ const AboutPage = () => {
                     </div>
                 </section>
                 <section className="sectionC lightpurple content-center">
-                    <div className="text-xl font-light author">
+                    <div className="text-xl font-light vision">
                         <div className="mx-auto max-w-5xl">
                             <h2 className="text-black">Vision</h2>
                             <div className="text-black space-y-3 mr-3 text-justify">
@@ -270,20 +375,20 @@ const AboutPage = () => {
                                     We’ve worked extensively in terms of geography and sector, developing a variety of work — products, services, and experiences — that has taught us that a well-defined visual strategy is key to bring visibility, credibility, and funds to any organization. Starting in 2021, we decided to plant a tree for each client that we work with.
                                 </p>
                             </div>
-                            <div className="row expanded mt-6" data-v-8e1ea8dc="">
-                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4" data-v-8e1ea8dc="">
+                            <div className="row expanded p-6">
+                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4">
                                     <h3>5<span> Years</span></h3>
                                     <p>Doing our Best</p>
                                 </div>
-                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4" data-v-8e1ea8dc="">
+                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4">
                                     <h3>161</h3>
                                     <p>Completed Projects</p>
                                 </div>
-                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4" data-v-8e1ea8dc="">
+                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4">
                                     <h3>23</h3>
                                     <p>Countries Worldwide</p>
                                 </div>
-                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4" data-v-8e1ea8dc="">
+                                <div className="xxlarge-3 medium-6 column statistic flex-1 w-3/4">
                                     <h3>28</h3>
                                     <p>Trees Planted</p>
                                 </div>
@@ -321,21 +426,22 @@ const AboutPage = () => {
                         </section>
                     );
                 })}
+                <div className="triggerForLast">|</div>
             </div>
             <div className="divE pink content-center h-100vh">
                 <div className="mx-auto max-w-5xl">
-                    <div className="flex">
-                        <div className="text-xl font-light flex-1 w-1/4 author ml-4 p-3">
+                    <div className="flex foter">
+                        <div className="text-xl font-light flex-1 w-1/4 ml-4 p-5 summarize">
                             <h2 className="text-black">Summary</h2>
-                            <div className="text-black space-y-3 mt-3 text-justify">
+                            <div className="text-black text-justify">
                                 <p>
                                     We’ve worked extensively in terms of geography and sector, developing a variety of work — products, services, and experiences — that has taught us that a well-defined visual strategy is key to bring visibility, credibility, and funds to any organization. Starting in 2021, we decided to plant a tree for each client that we work with.
                                 </p>
                             </div>
                         </div>
-                        <div className="text-xl font-light flex-1 w-3/4 author mr-4 p-3">
+                        <div className="text-xl font-light flex-1 w-3/4 mr-4 p-5 purposes">
                             <h2 className="text-black">Purpose</h2>
-                            <div className="text-black space-y-3 mt-3 text-justify">
+                            <div className="text-black text-justify">
                                 <p>
                                     We’ve worked extensively in terms of geography and sector, developing a variety of work — products, services, and experiences — that has taught us that a well-defined visual strategy is key to bring visibility, credibility, and funds to any organization. Starting in 2021, we decided to plant a tree for each client that we work with.
                                 </p>

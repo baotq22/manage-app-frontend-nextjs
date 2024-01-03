@@ -86,20 +86,22 @@ export default function Home() {
         duration: 2,
         opacity: 1,
       }
-    )
+    );
 
-    gsap.fromTo(".product__list",
+    gsap.fromTo(
+      ".product__list",
       {
         opacity: 0,
-        ease: "fade",
-        scrollTrigger: {
-          trigger: ".product__list"
-        }
       },
       {
-        duration: 6,
+        duration: 2,
         opacity: 1,
-        ease: "rough"
+        scrollTrigger: {
+          trigger: ".product__list",
+          start: "top center",
+          end: "bottom center",
+          scrub: true,
+        },
       }
     );
   }, []);
